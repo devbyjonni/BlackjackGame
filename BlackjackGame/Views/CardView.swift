@@ -50,7 +50,7 @@ struct CardView: View {
         Image(isFaceUp ? "\(rankName)_\(card.suit)" : "Face_Down_Card")
             .resizable()
             .scaledToFit()
-            .frame(width: 120) // Sets the card size
+            .frame(width: 200) // Sets the card size
             .shadow(radius: 2, x: 2, y: 2) // Adds a slight shadow for depth
     }
 }
