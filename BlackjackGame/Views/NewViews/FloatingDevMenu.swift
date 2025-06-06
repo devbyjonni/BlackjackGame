@@ -8,44 +8,35 @@ struct FloatingDevMenu: View {
         VStack(alignment: .trailing, spacing: 8) {
             if isVisible {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Dev Menu")
-                        .font(.caption)
+                    Text("DEV MENU")
+                        .font(.caption2)
                         .bold()
-                        .foregroundColor(.gray)
+                        .foregroundColor(.white)
 
                     Divider()
                         .background(Color.white.opacity(0.2))
 
-                    Picker("Speed", selection: $animationSpeed) {
-                        ForEach(AnimationSpeed.allCases) { speed in
-                            Text(speed.rawValue.capitalized).tag(speed)
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .tint(.white) // ✅ clean + readable inside dark menu
-                    .frame(width: 180)
-                    
+                    SegmentedControlView(selection: $animationSpeed)
+                        .frame(width: 180)
                 }
                 .padding()
-                .background(Color.black)
-                .opacity(0.7)
+                .background(Color.black.opacity(0.7))
                 .cornerRadius(12)
                 .shadow(radius: 8)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-    
             }
 
-            Button(action: {
+            Button {
                 withAnimation {
                     isVisible.toggle()
                 }
-            }) {
+            } label: {
                 Text("DEV")
                     .font(.caption).bold()
                     .foregroundColor(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(.ultraThinMaterial) // ✅ glossy system feel
+                    .background(Color.black)
                     .cornerRadius(10)
                     .shadow(radius: 4)
             }
