@@ -7,6 +7,7 @@ struct NewGameView: View {
     @State private var dealerCards: [Card] = []
     @State private var isGameOver = false
     @State private var isCollapsing = false
+    
 
     private let cardWidth: CGFloat = 100
 
@@ -16,18 +17,34 @@ struct NewGameView: View {
         Card(suit: "Clubs", rank: "Six", value: 6),
         Card(suit: "Diamonds", rank: "Three", value: 3),
         Card(suit: "Diamonds", rank: "Queen", value: 10),
-        Card(suit: "Clubs", rank: "Seven", value: 7)
+        Card(suit: "Clubs", rank: "Seven", value: 7),
+        Card(suit: "Spades", rank: "Five", value: 5),
+        Card(suit: "Hearts", rank: "Two", value: 2),
+        Card(suit: "Clubs", rank: "Nine", value: 9),     // Added
+        Card(suit: "Hearts", rank: "Four", value: 4)     // Added
     ]
 
     var body: some View {
         ZStack {
             VStack {
-                HandCardStackView(cards: dealerCards, cardWidth: cardWidth, isGameOver: isGameOver, isCollapsing: isCollapsing)
+                HandCardStackView(
+                    cards: dealerCards,
+                    cardWidth: cardWidth,
+                    isGameOver: isGameOver,
+                    isCollapsing: isCollapsing,
+                    isDealer: true
+                )
                 Spacer()
                 Text("Logo View Goes Here")
                     .frame(height: 50)
                 Spacer()
-                HandCardStackView(cards: playerCards, cardWidth: cardWidth, isGameOver: isGameOver, isCollapsing: isCollapsing)
+                HandCardStackView(
+                    cards: playerCards,
+                    cardWidth: cardWidth,
+                    isGameOver: isGameOver,
+                    isCollapsing: isCollapsing,
+                    isDealer: false
+                )
                 Spacer()
                 GameButton(title: "Start Dealing") {
                     dealOpeningCards()
@@ -85,6 +102,13 @@ struct NewGameView: View {
         addCard(fullDeck[5], to: $dealerCards, after: delayUnit * 4)
         addCard(fullDeck[2], to: $playerCards, after: delayUnit * 6)
         addCard(fullDeck[3], to: $playerCards, after: delayUnit * 8)
+        
+        
+        // Additional dealer cards (after player is done)
+        addCard(fullDeck[6], to: $dealerCards, after: delayUnit * 10)
+        addCard(fullDeck[7], to: $dealerCards, after: delayUnit * 12)
+        addCard(fullDeck[8], to: $dealerCards, after: delayUnit * 14)
+        addCard(fullDeck[9], to: $dealerCards, after: delayUnit * 16)
     }
 
     private func clone(_ card: Card) -> Card {
