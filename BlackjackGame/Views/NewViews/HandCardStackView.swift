@@ -1,4 +1,3 @@
-// HandCardStackView.swift
 import SwiftUI
 
 struct HandCardStackView: View {
@@ -7,20 +6,24 @@ struct HandCardStackView: View {
 
     var body: some View {
         let overlap: CGFloat = cardWidth * 0.25
-        let handWidth = cardWidth + CGFloat(max(0, cards.count - 1)) * overlap
+        let extraCards = max(0, cards.count - 2)
+        let extraOffset = CGFloat(extraCards) * overlap / 2
+        let visibleCards = 2
+        let handWidth = cardWidth + CGFloat(max(0, visibleCards - 1)) * overlap
         let totalOffset = handWidth / 2 - cardWidth / 2
 
         ZStack {
-            ForEach(cards.indices, id: \.self) { index in
-                CardView(card: cards[index], isFaceUp: true)
+            ForEach(cards) { card in
+                CardView(card: card, isFaceUp: true)
                     .frame(width: cardWidth)
-                    .offset(x: CGFloat(index) * overlap - totalOffset)
+                    .offset(x: CGFloat(cards.firstIndex(of: card) ?? 0) * overlap - totalOffset)
                     .transition(.asymmetric(
                         insertion: .move(edge: .trailing).combined(with: .opacity),
                         removal: .opacity
                     ))
             }
         }
+        .offset(x: cards.count > 2 ? -extraOffset : 0)
         .frame(maxWidth: .infinity, maxHeight: 200)
     }
 }
