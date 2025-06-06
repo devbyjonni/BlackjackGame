@@ -18,6 +18,16 @@ struct FloatingDevMenu: View {
 
                     SegmentedControlView(selection: $animationSpeed)
                         .frame(width: 180)
+                    Button("Game Completed") {
+                        NotificationCenter.default.post(name: .simulateGameEnd, object: nil)
+                    }
+                    .font(.caption2)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+                    .background(Color.red)
+                    .cornerRadius(8)
+                
                 }
                 .padding()
                 .background(Color.black.opacity(0.7))
@@ -45,4 +55,8 @@ struct FloatingDevMenu: View {
         .padding(.bottom, 20)
         .frame(width: 220, alignment: .trailing)
     }
+}
+
+extension Notification.Name {
+    static let simulateGameEnd = Notification.Name("simulateGameEnd")
 }

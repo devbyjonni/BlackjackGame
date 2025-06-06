@@ -5,6 +5,8 @@ struct NewGameView: View {
     @State private var animationSpeed: AnimationSpeed = .medium
     @State private var playerCards: [Card] = []
     @State private var dealerCards: [Card] = []
+    @State private var isGameOver = false
+    @State private var isCollapsing = false
 
     private let cardWidth: CGFloat = 100
 
@@ -20,12 +22,12 @@ struct NewGameView: View {
     var body: some View {
         ZStack {
             VStack {
-                HandCardStackView(cards: dealerCards, cardWidth: cardWidth)
+                HandCardStackView(cards: dealerCards, cardWidth: cardWidth, isGameOver: isGameOver, isCollapsing: isCollapsing)
                 Spacer()
                 Text("Logo View Goes Here")
                     .frame(height: 50)
                 Spacer()
-                HandCardStackView(cards: playerCards, cardWidth: cardWidth)
+                HandCardStackView(cards: playerCards, cardWidth: cardWidth, isGameOver: isGameOver, isCollapsing: isCollapsing)
                 Spacer()
                 GameButton(title: "Start Dealing") {
                     dealOpeningCards()
@@ -37,6 +39,30 @@ struct NewGameView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             FloatingDevMenu(isVisible: $showDevMenu, animationSpeed: $animationSpeed)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .simulateGameEnd)) { _ in
+            endGame()
+        }
+    }
+    
+    private func endGame() {
+        withAnimation {
+            isCollapsing = true
+        }
+
+        // Wait for collapse first
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            withAnimation {
+                isGameOver = true
+            }
+        }
+
+        // Wait for slide out, then reset cards
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            playerCards = []
+            dealerCards = []
+            isGameOver = false
+            isCollapsing = false
         }
     }
 
