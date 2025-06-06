@@ -50,6 +50,8 @@ struct HandView: View {
             HStack {
                 ForEach(hand.cards.indices, id: \.self) { index in
                     CardView(card: hand.cards[index], isFaceUp: gameOver || index != 0)
+                        .transition(.move(edge: .top)) // ✅ Slide down from top
+                        .animation(.easeOut.delay(Double(index) * 0.15), value: hand.cards.count) // ✅ Staggered animation
                 }
             }
         }
