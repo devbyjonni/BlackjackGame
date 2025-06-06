@@ -101,7 +101,7 @@ struct GameView: View {
     private func actionButtons() -> some View {
         if !game.gameOver && !game.hideButtons {
             HStack(spacing: 20) {
-                GameActionButton(title: "Hit", color: .black) {
+                GameButton(title: "Hit") {
                     game.playerHit()
                     if game.gameOver {
                         showStatusThenReset()
@@ -109,7 +109,7 @@ struct GameView: View {
                 }
                 .frame(width: buttonWidth, height: buttonHeight)
 
-                GameActionButton(title: "Stand", color: .black) {
+                GameButton(title: "Stand") {
                     game.playerStand {
                         showStatusThenReset()
                     }
@@ -118,7 +118,7 @@ struct GameView: View {
             }
             .padding(.top, 15)
         } else if game.gameOver {
-            GameActionButton(title: "Deal", color: .black) {
+            GameButton(title: "Deal") {
                 game.startGame()
             }
             .frame(width: dealButtonWidth, height: buttonHeight)
