@@ -18,15 +18,19 @@ struct FloatingDevMenu: View {
 
                     SegmentedControlView(selection: $animationSpeed)
                         .frame(width: 180)
-                    Button("Game Completed") {
+                    Button(action: {
                         NotificationCenter.default.post(name: .simulateGameEnd, object: nil)
+                    }) {
+                        Text("Game Completed")
+                            .font(.caption2)
+                            .bold()
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10) // ⬅️ slightly more padding for better tap target
+                            .background(Color.red)
+                            .cornerRadius(8)
                     }
-                    .font(.caption2)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
-                    .background(Color.red)
-                    .cornerRadius(8)
+                    .contentShape(Rectangle()) // ⬅️ makes sure whole frame is tappable
                 
                 }
                 .padding()
