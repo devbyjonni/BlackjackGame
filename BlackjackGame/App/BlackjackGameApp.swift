@@ -11,8 +11,7 @@ import SwiftUI
 struct BlackjackGameApp: App {
     var body: some Scene {
         WindowGroup {
-            //NewGameView()
-            CardAnimationTestView()
+            NewGameView()
         }
     }
 }

@@ -7,7 +7,7 @@ struct NewGameView: View {
     @State private var dealerCards: [Card] = []
     @State private var isGameOver = false
     @State private var isCollapsing = false
-    
+    @State private var currentIndex = 0 // 🔹 Tracks next card to deal
 
     private let cardWidth: CGFloat = 100
 
@@ -20,34 +20,35 @@ struct NewGameView: View {
         Card(suit: "Clubs", rank: "Seven", value: 7),
         Card(suit: "Spades", rank: "Five", value: 5),
         Card(suit: "Hearts", rank: "Two", value: 2),
-        Card(suit: "Clubs", rank: "Nine", value: 9),     // Added
-        Card(suit: "Hearts", rank: "Four", value: 4)     // Added
+        Card(suit: "Clubs", rank: "Nine", value: 9),
+        Card(suit: "Hearts", rank: "Four", value: 4)
     ]
 
     var body: some View {
         ZStack {
-            VStack {
-                HandCardStackView(
-                    cards: dealerCards,
-                    cardWidth: cardWidth,
-                    isGameOver: isGameOver,
-                    isCollapsing: isCollapsing,
-                    isDealer: true
-                )
+            VStack(spacing: 20) {
                 Spacer()
+                
                 Text("Logo View Goes Here")
                     .frame(height: 50)
+
                 Spacer()
-                HandCardStackView(
+
+                PlayerHandCardStackView(
                     cards: playerCards,
                     cardWidth: cardWidth,
                     isGameOver: isGameOver,
-                    isCollapsing: isCollapsing,
-                    isDealer: false
+                    isCollapsing: isCollapsing
                 )
+
                 Spacer()
+
                 GameButton(title: "Start Dealing") {
                     dealOpeningCards()
+                }
+
+                GameButton(title: "Deal One Card") {
+                    dealOneCardToPlayer()
                 }
             }
             .padding()
@@ -61,25 +62,15 @@ struct NewGameView: View {
             endGame()
         }
     }
-    
-    private func endGame() {
+
+    private func dealOneCardToPlayer() {
+        guard currentIndex < fullDeck.count else { return }
+
+        let card = fullDeck[currentIndex]
+        currentIndex += 1
+
         withAnimation {
-            isCollapsing = true
-        }
-
-        // Wait for collapse first
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation {
-                isGameOver = true
-            }
-        }
-
-        // Wait for slide out, then reset cards
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            playerCards = []
-            dealerCards = []
-            isGameOver = false
-            isCollapsing = false
+            playerCards.append(clone(card))
         }
     }
 
@@ -87,11 +78,12 @@ struct NewGameView: View {
         let delayUnit = animationSpeed.delay
         playerCards = []
         dealerCards = []
+        currentIndex = 0
 
         func addCard(_ card: Card, to hand: Binding<[Card]>, after delay: TimeInterval) {
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 withAnimation {
-                    hand.wrappedValue.append(clone(card)) // ✅ fresh UUID!
+                    hand.wrappedValue.append(clone(card))
                 }
             }
         }
@@ -102,9 +94,6 @@ struct NewGameView: View {
         addCard(fullDeck[5], to: $dealerCards, after: delayUnit * 4)
         addCard(fullDeck[2], to: $playerCards, after: delayUnit * 6)
         addCard(fullDeck[3], to: $playerCards, after: delayUnit * 8)
-        
-        
-        // Additional dealer cards (after player is done)
         addCard(fullDeck[6], to: $dealerCards, after: delayUnit * 10)
         addCard(fullDeck[7], to: $dealerCards, after: delayUnit * 12)
         addCard(fullDeck[8], to: $dealerCards, after: delayUnit * 14)
@@ -114,4 +103,29 @@ struct NewGameView: View {
     private func clone(_ card: Card) -> Card {
         Card(suit: card.suit, rank: card.rank, value: card.value)
     }
+
+    private func endGame() {
+        // 🃏 Step 1: Flip all cards face-down
+        withAnimation(.easeInOut(duration: 0.6)) {
+            isGameOver = true
+        }
+
+        // 🎯 Step 2: Collapse cards to center (after flip is visible)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            withAnimation(.easeInOut(duration: 0.6)) {
+                isCollapsing = true
+            }
+        }
+
+        // 🧹 Step 3: Slide out & reset everything
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+            playerCards = []
+            dealerCards = []
+            isGameOver = false
+            isCollapsing = false
+            currentIndex = 0
+        }
+    }
+    
+  
 }
