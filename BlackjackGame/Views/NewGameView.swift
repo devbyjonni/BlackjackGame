@@ -10,13 +10,13 @@ import SwiftUI
 struct NewGameView: View {
     @State private var showDevMenu = false
     @State private var animationSpeed: AnimationSpeed = .medium
-    @State private var playerCards: [Card] = []
-    @State private var dealerCards: [Card] = []
+    @State private var cards: [Card] = []
     @State private var isGameOver = false
-    @State private var currentIndex = 0 // 🔹 Tracks next card to deal
-
+    @State private var currentIndex = 0
+    @State private var isDealing = false
+    
     private let cardWidth: CGFloat = 100
-
+    
     private let fullDeck: [Card] = [
         Card(suit: "Spades", rank: "Ace", value: 11),
         Card(suit: "Hearts", rank: "King", value: 10),
@@ -29,7 +29,7 @@ struct NewGameView: View {
         Card(suit: "Clubs", rank: "Nine", value: 9),
         Card(suit: "Hearts", rank: "Four", value: 4)
     ]
-
+    
     var body: some View {
         ZStack {
             VStack {
@@ -37,15 +37,15 @@ struct NewGameView: View {
                 Text("Logo View Goes Here")
                     .frame(height: 50)
                 Spacer()
-                CenteredCardStackView(
+                FanCardsView(
                     height: 200,
-                    cards: playerCards,
+                    cards: cards,
                     cardWidth: cardWidth,
                     isGameOver: isGameOver
                 )
                 Spacer()
                 GameButton(title: "Start Dealing") {
-                    dealOpeningCards()
+                    dealTwoOpeningCards()
                 }
             }
             .padding()
@@ -59,62 +59,90 @@ struct NewGameView: View {
             endGame()
         }
         .onReceive(NotificationCenter.default.publisher(for: .devStartDealing)) { _ in
-            dealOpeningCards()
+            dealAllOpeningCards()
         }
         .onReceive(NotificationCenter.default.publisher(for: .devDealOneCard)) { _ in
             dealOneCardToPlayer()
         }
     }
-
+    
     private func dealOneCardToPlayer() {
-        guard currentIndex < fullDeck.count else { return }
+        guard !isDealing, currentIndex < fullDeck.count else { return }
+        isDealing = true
+        
         let card = fullDeck[currentIndex]
         currentIndex += 1
+        
         withAnimation {
-            playerCards.append(clone(card))
+            cards.append(card)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            isDealing = false
         }
     }
-
-    private func dealOpeningCards() {
+    
+    private func dealTwoOpeningCards() {
+        guard !isDealing else { return }
+        isDealing = true
+        
         let delayUnit = animationSpeed.delay
-        playerCards = []
-        dealerCards = []
+        cards = []
         currentIndex = 0
-
-        func addCard(_ card: Card, to hand: Binding<[Card]>, after delay: TimeInterval) {
+        
+        func addCard(_ card: Card, after delay: TimeInterval) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                withAnimation {
+                    cards.append(card)
+                }
+                if delay == delayUnit * 2 {
+                    isDealing = false
+                }
+            }
+        }
+        
+        addCard(fullDeck[0], after: delayUnit * 1)
+        addCard(fullDeck[4], after: delayUnit * 2)
+    }
+    
+    private func dealAllOpeningCards() {
+        guard !isDealing else { return }
+        isDealing = true
+        
+        let delayUnit = animationSpeed.delay
+        cards = []
+        currentIndex = 0
+        
+        func addCard(_ card: Card, to hand: Binding<[Card]>, after delay: TimeInterval, isLast: Bool = false) {
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 withAnimation {
                     hand.wrappedValue.append(clone(card))
                 }
+                if isLast {
+                    isDealing = false
+                }
             }
         }
-
-        addCard(fullDeck[0], to: $playerCards, after: delayUnit * 1)
-        addCard(fullDeck[4], to: $dealerCards, after: delayUnit * 2)
-        addCard(fullDeck[1], to: $playerCards, after: delayUnit * 3)
-        addCard(fullDeck[5], to: $dealerCards, after: delayUnit * 4)
-        addCard(fullDeck[2], to: $playerCards, after: delayUnit * 6)
-        addCard(fullDeck[3], to: $playerCards, after: delayUnit * 8)
-        addCard(fullDeck[6], to: $dealerCards, after: delayUnit * 10)
-        addCard(fullDeck[7], to: $dealerCards, after: delayUnit * 12)
-        addCard(fullDeck[8], to: $dealerCards, after: delayUnit * 14)
-        addCard(fullDeck[9], to: $dealerCards, after: delayUnit * 16)
+        
+        addCard(fullDeck[0], to: $cards, after: delayUnit * 1)
+        addCard(fullDeck[4], to: $cards, after: delayUnit * 2)
+        addCard(fullDeck[1], to: $cards, after: delayUnit * 3)
+        addCard(fullDeck[5], to: $cards, after: delayUnit * 4, isLast: true)
     }
-
+    
     private func clone(_ card: Card) -> Card {
         Card(suit: card.suit, rank: card.rank, value: card.value)
     }
-
+    
     private func endGame() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             withAnimation(.easeInOut(duration: 0.6)) {
                 isGameOver = true
             }
         }
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-            playerCards = []
-            dealerCards = []
+            cards = []
             isGameOver = false
             currentIndex = 0
         }

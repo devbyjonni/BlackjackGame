@@ -7,13 +7,15 @@
 
 import Foundation
 
-struct Card: Identifiable, Equatable {
+final class Card: Identifiable, ObservableObject {
     let id = UUID()
     let suit: String
     let rank: String
     let value: Int
-    
-    var description: String {
-        "\(rank) of \(suit)"
+
+    init(suit: String, rank: String, value: Int) {
+        self.suit = suit
+        self.rank = rank
+        self.value = value
     }
 }
