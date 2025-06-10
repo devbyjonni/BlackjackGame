@@ -13,7 +13,7 @@ struct FlipCardView: View {
     let height: CGFloat
 
     @State private var isFaceUp = false
-    @State private var rotation: Double = 180 // Starts face-down
+    @State private var rotation: Double = 180 // Starts face-down on animation
 
     var body: some View {
         ZStack {
