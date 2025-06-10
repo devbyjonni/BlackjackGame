@@ -38,6 +38,7 @@ struct NewGameView: View {
                     .frame(height: 50)
                 Spacer()
                 CenteredCardStackView(
+                    height: 200,
                     cards: playerCards,
                     cardWidth: cardWidth,
                     isGameOver: isGameOver

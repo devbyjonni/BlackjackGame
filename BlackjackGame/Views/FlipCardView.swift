@@ -11,7 +11,6 @@ struct FlipCardView: View {
     let card: Card
     let width: CGFloat
     let height: CGFloat
-    let delay: Double
 
     @State private var isFaceUp = false
     @State private var rotation: Double = 180 // Starts face-down

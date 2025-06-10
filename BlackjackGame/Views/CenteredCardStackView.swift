@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CenteredCardStackView: View {
+    let height: CGFloat
     let cards: [Card]
     let cardWidth: CGFloat
     var isGameOver: Bool = false
@@ -22,7 +23,7 @@ struct CenteredCardStackView: View {
 
             ZStack {
                 ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
-                    FlipCardView(card: card, width: cardWidth, height: cardHeight, delay: Double(index) * 0.2)
+                    FlipCardView(card: card, width: cardWidth, height: cardHeight)
                         .frame(width: cardWidth, height: cardHeight)
                         .rotationEffect(.degrees(rotationAngle(for: index)))
                         .position(
@@ -36,7 +37,7 @@ struct CenteredCardStackView: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: 200)
+        .frame(maxWidth: .infinity, maxHeight: height)
     }
 
     /// Small angle twist per card for a natural feel
@@ -45,8 +46,8 @@ struct CenteredCardStackView: View {
         return baseAngles[index % baseAngles.count]
     }
     
-    /// 🧠 Calculates x-positions for cards based on count and overlap spacing
-    func xPosition(for index: Int, count: Int, centerX: CGFloat, overlap: CGFloat) -> CGFloat {
+    /// Calculates x-positions for cards based on count and overlap spacing
+    private func xPosition(for index: Int, count: Int, centerX: CGFloat, overlap: CGFloat) -> CGFloat {
         /// Reduces spacing slightly as more cards are added to avoid overflow
         let spacingTighteningFactor: CGFloat = 0.05
         /// Maximum overlap ratio used when card count is high (fallback layout)
