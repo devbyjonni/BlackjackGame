@@ -47,19 +47,22 @@ struct NewGameView: View {
                 GameButton(title: "Start Dealing") {
                     dealOpeningCards()
                 }
-                GameButton(title: "Deal One Card") {
-                    dealOneCardToPlayer()
-                }
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("Custom_Green"))
         }
         .overlay(alignment: .bottomTrailing) {
-            FloatingDevMenu(isVisible: $showDevMenu, animationSpeed: $animationSpeed)
+            DevMenu(isVisible: $showDevMenu, animationSpeed: $animationSpeed)
         }
-        .onReceive(NotificationCenter.default.publisher(for: .simulateGameEnd)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .devGameEnd)) { _ in
             endGame()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .devStartDealing)) { _ in
+            dealOpeningCards()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .devDealOneCard)) { _ in
+            dealOneCardToPlayer()
         }
     }
 
