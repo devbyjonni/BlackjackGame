@@ -2,10 +2,8 @@
 //  GameStatusView.swift
 //  BlackjackGame
 //
-//  Created by Jonni Akesson on 2025-02-15.
+//  Created by Jonni Akesson on 2025-06-05.
 //
-
-import SwiftUI
 
 import SwiftUI
 

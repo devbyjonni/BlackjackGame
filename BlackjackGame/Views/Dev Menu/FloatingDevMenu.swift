@@ -1,3 +1,10 @@
+//
+//  FloatingDevMenu.swift
+//  BlackjackGame
+//
+//  Created by Jonni Akesson on 2025-06-05.
+//
+
 import SwiftUI
 
 struct FloatingDevMenu: View {
@@ -26,12 +33,11 @@ struct FloatingDevMenu: View {
                             .bold()
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10) // ⬅️ slightly more padding for better tap target
+                            .padding(.vertical, 10)
                             .background(Color.red)
                             .cornerRadius(8)
                     }
-                    .contentShape(Rectangle()) // ⬅️ makes sure whole frame is tappable
-                
+                    .contentShape(Rectangle())
                 }
                 .padding()
                 .background(Color.black.opacity(0.7))

@@ -1,3 +1,10 @@
+//
+//  GameView.swift
+//  BlackjackGame
+//
+//  Created by Jonni Akesson on 2025-06-05.
+//
+
 import SwiftUI
 
 struct GameView: View {
