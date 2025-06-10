@@ -1,20 +1,42 @@
-# 🃏 BlackjackGame
+# BlackjackGame
 
-#### A simple and fun Blackjack game built with SwiftUI.
+A simple and fun Blackjack game built with SwiftUI. Designed to explore animation, state management, and modular view structure using the latest Swift 6 features.
 
 ## Features
 
-- Swift 6 with `@Observable` for state management
-- Modular views: `GameView`, `HandView`, `Deck`, etc.
-- Emoji-enhanced messages and clean game flow
-- Scoreboard that tracks wins, losses, and Blackjacks 🎯
-- Designed for learning and fun!
+- Swift 6 using the new `@Observable` macro
+- Flip animations using `rotation3DEffect`
+- Clean card dealing and collapsing flow
+- Modular components (Cards, Views, Buttons)
+- Dev Menu with adjustable animation speed and simulation buttons
+- Scoreboard that tracks wins, losses, and Blackjacks
 
 ## Folder Structure
 
 ```
 BlackjackGame/
 ├── BlackjackGame/
+│   ├── App/
+│   │   └── BlackjackGameApp.swift
+│   ├── Managers/
+│   │   └── GameManager.swift
+│   ├── Models/
+│   │   ├── Card.swift
+│   │   ├── Deck.swift
+│   │   └── Hand.swift
+│   ├── Views/
+│   │   ├── Buttons/
+│   │   │   └── GameButton.swift
+│   │   ├── DevMenu/
+│   │   │   ├── DevMenu.swift
+│   │   │   ├── SegmentedControlView.swift
+│   │   │   └── AnimationSpeed.swift
+│   │   ├── CenteredCardStackView.swift
+│   │   ├── FlipCardView.swift
+│   │   ├── GameStatusView.swift
+│   │   ├── HandView.swift
+│   │   ├── CardView.swift
+│   │   ├── GameView.swift
 ├── BlackjackGame.xcodeproj
 ├── README.md
 └── .gitignore
@@ -24,21 +46,21 @@ BlackjackGame/
 
 ### Models
 
-- `Card` – describes a playing card with suit, rank and value.
-- `Deck` – creates and shuffles multiple decks, dealing cards as needed.
-- `Hand` – represents a player's or dealer's hand and calculates its value.
+- `Card`: Describes a card with suit, rank, and value
+- `Deck`: Generates and shuffles one or more decks
+- `Hand`: Calculates total hand value and Blackjack logic
 
 ### Views
 
-- `GameView` – drives the gameplay and contains the action buttons and scoreboard.
-- `HandView` – renders the player and dealer hands.
-- `CardView` – displays a single card image.
-- `GameStatusView` – shows temporary messages such as wins or busts.
-- `GameActionButton` – a reusable button with a simple animation.
+- `GameView`: Main game screen using card stacks and animations
+- `HandView`: Renders hands with logic-based overlap
+- `CardView`: Single card view (front or back)
+- `FlipCardView`: Card with 3D flip animation
+- `CenteredCardStackView`: For overlapping dealer or player cards
+- `GameStatusView`: Shows round result messages
 
-## Getting Started
+### Dev Tools
 
-Open `BlackjackGame.xcodeproj` in Xcode and build for iOS or macOS. The project
-requires Swift 6 with the `@Observable` macro. When the app launches you'll see
-the main game view and can start dealing cards right away. The scoreboard keeps
-track of wins, losses and Blackjacks across rounds.
+- `DevMenu`: Floating menu with debug actions and animation speed control
+- `SegmentedControlView`: Custom segment control for dev settings
+- `AnimationSpeed`: Enum to control delay and speed globally
