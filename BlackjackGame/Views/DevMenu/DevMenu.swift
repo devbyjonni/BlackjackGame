@@ -22,10 +22,6 @@ struct DevMenu: View {
                     
                     SegmentedControlView(selection: $animationSpeed)
                         .frame(width: 180)
-                    
-                    DevMenuButton(title: "Game Completed", color: .red) {
-                        NotificationCenter.default.post(name: .devGameEnd, object: nil)
-                    }
 
                     DevMenuButton(title: "Start Dealing") {
                         NotificationCenter.default.post(name: .devStartDealing, object: nil)
@@ -33,6 +29,14 @@ struct DevMenu: View {
 
                     DevMenuButton(title: "Deal One Card") {
                         NotificationCenter.default.post(name: .devDealOneCard, object: nil)
+                    }
+                    
+                    DevMenuButton(title: "Deal Split Cards") {
+                        NotificationCenter.default.post(name: .devDealSplitCards, object: nil)
+                    }
+                    
+                    DevMenuButton(title: "Game Completed", color: .red) {
+                        NotificationCenter.default.post(name: .devGameEnd, object: nil)
                     }
                 }
                 .padding()
@@ -98,4 +102,5 @@ extension Notification.Name {
     static let devGameEnd = Notification.Name("devGameEnd")
     static let devStartDealing = Notification.Name("devStartDealing")
     static let devDealOneCard = Notification.Name("devDealOneCard")
+    static let devDealSplitCards = Notification.Name("devDealSplitCards")
 }

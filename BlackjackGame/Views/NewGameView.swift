@@ -15,6 +15,8 @@ struct NewGameView: View {
     @State private var currentIndex = 0
     @State private var isDealing = false
     
+    @State private var isSplitView = false
+    
     private let cardWidth: CGFloat = 100
     
     private let fullDeck: [Card] = [
@@ -64,6 +66,32 @@ struct NewGameView: View {
         .onReceive(NotificationCenter.default.publisher(for: .devDealOneCard)) { _ in
             dealOneCardToPlayer()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .devDealSplitCards)) { _ in
+            devDealSplitCards()
+        }
+    }
+    
+    private func devDealSplitCards() {
+        guard !isDealing else { return }
+        isDealing = true
+        
+        let delayUnit = animationSpeed.delay
+        cards = []
+        currentIndex = 0
+        
+        func addCard(_ card: Card, after delay: TimeInterval) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                withAnimation {
+                    cards.append(card)
+                }
+                if delay == delayUnit * 2 {
+                    isDealing = false
+                }
+            }
+        }
+        
+        addCard(fullDeck[1], after: delayUnit * 1) // Hearts, King
+        addCard(fullDeck[4], after: delayUnit * 2) // Hearts, King
     }
     
     private func dealOneCardToPlayer() {
@@ -147,4 +175,16 @@ struct NewGameView: View {
             currentIndex = 0
         }
     }
+}
+
+import Foundation
+import Observation
+
+@Observable
+class NewGameViewModel {
+    var isSplitView = false
+
+    var xPositionOnFirstCard: CGFloat = 0
+    var xPositionOnSecondCard: CGFloat = 0
+    
 }
